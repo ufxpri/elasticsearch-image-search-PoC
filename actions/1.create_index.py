@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 
 es = Elasticsearch(hosts=['http://localhost'], port='9200')
 
-es.indices.delete(index="new_feature")
+es.indices.delete(index="new_feature", ignore=404)
 
 es.indices.create(
     index="new_feature", 
@@ -11,18 +11,19 @@ es.indices.create(
     },
     mappings={
         "properties": {
-            "feature": {
+            "embedding": {
                 "type": "dense_vector",
-                "dims": 128
+                "dims": 1024,
+                "index": True,
+                "similarity": "dot_product" 
             },
-            "image_id": {
+            "image_url": {
                 "type": "text"
             }
         }
     }, 
     params=None, 
-    headers=None,
-    ignore=400
+    headers=None
 )
 
 print(es.indices.get(index='new_feature'))
